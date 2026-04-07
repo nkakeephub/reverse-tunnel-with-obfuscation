@@ -4,7 +4,7 @@
 
 1. Подготовка (Оба сервера)
 
-## 🌍 Выполнить на **RU** и **VPS**:
+## ⚙️ Выполнить на **RU** и **VPS**:
 
 ```
 sudo apt update && sudo apt upgrade -y
@@ -35,7 +35,7 @@ cat publickey
 
 Создать файл `sudo nano /etc/amnezia/amneziawg/awg0.conf`:
 
-🇷🇺 **На RU-сервере (Приемник):**
+## **На RU-сервере (Приемник):**
 
 ```
 [Interface]
@@ -58,7 +58,7 @@ PublicKey = <ПУБЛИЧНЫЙ_KEY_ОТ_VPS>
 AllowedIPs = 10.8.0.2/32
 ```
 
-## 🌍 **На VPS-сервере (Инициатор):**
+## **На VPS-сервере (Инициатор):**
 
 ```
 [Interface]
@@ -131,7 +131,7 @@ WantedBy=multi-user.target
 sudo systemctl enable --now gost
 ```
 
-## 4. 🌍 Установка 3x-ui (Только VPS)
+## 4. Установка 3x-ui (Только VPS)
 
 ```
 bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)
@@ -142,9 +142,9 @@ bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.
 3. **Listen IP** оставить ПУСТЫМ.
 4. **SNI/Dest**: `asus.com` или `google.com`.
 
-## 5. 🇷🇺 🌍 Оптимизация Скорости (Оба сервера)
+## 5. Оптимизация Скорости (Оба сервера)
 
-Чтобы YouTube не тормозил (BBR):
+Чтобы YouTube не тормозил (BBR & IPv6 off):
 
 ```
 echo "net.core.default_qdisc=fq" | sudo tee -a /etc/sysctl.conf
