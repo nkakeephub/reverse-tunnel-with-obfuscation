@@ -153,7 +153,7 @@ bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.
 
 ## 5. Оптимизация Скорости (Оба сервера)
 
-Чтобы YouTube не тормозил (BBR & IPv6 off):
+Чтобы YouTube не тормозил (BBR on & IPv6 off):
 
 ```
 echo "net.core.default_qdisc=fq" | sudo tee -a /etc/sysctl.conf
