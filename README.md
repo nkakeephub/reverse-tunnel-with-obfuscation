@@ -4,7 +4,7 @@
 
 1. Подготовка (Оба сервера)
 
-🇷🇺 🌍 Выполнить на **RU** и **VPS**:
+## 🌍 Выполнить на **RU** и **VPS**:
 
 ```
 sudo apt update && sudo apt upgrade -y
@@ -58,7 +58,7 @@ PublicKey = <ПУБЛИЧНЫЙ_KEY_ОТ_VPS>
 AllowedIPs = 10.8.0.2/32
 ```
 
-🌍 **На VPS-сервере (Инициатор):**
+## 🌍 **На VPS-сервере (Инициатор):**
 
 ```
 [Interface]
@@ -85,14 +85,9 @@ PersistentKeepalive = 20
 
 **Запуск (на обоих):** `sudo awg-quick up awg0`. Проверка связи с VPS: `ping 10.8.0.1`.
 
-Посмотреть в терминале config AmneziaWG:
-  
-```
-sudo awg show
-```
 ---
 
-3. 🇷🇺 Установка Gost (Только RU)
+## 3. Установка Gost (Только RU)
 
 Скачать архив:
 ```
@@ -101,11 +96,17 @@ sudo awg show
 
 Используя любой FTP-клиент, подключиться к серверу:
 
-https://filezilla-project.org/download.php?platform=win32
-https://filezilla-project.org/download.php?platform=osx
-https://filezilla-project.org/download.php?platform=macos-arm64
 
-https://filezilla-project.org/download.php?type=client
+
+
+https://filezilla-project.org/download.php?platform=win32 <img width="48" height="48" alt="icons8-windows-10-48" src="https://github.com/user-attachments/assets/1dead14d-1fec-41f3-b653-a74020ab12e8" /> 
+
+
+https://filezilla-project.org/download.php?platform=osx <img width="50" height="50" alt="icons8-mac-os-50" src="https://github.com/user-attachments/assets/e70c4553-5d64-4431-8048-ce7c89b89484" />
+
+
+(https://filezilla-project.org/download.php?platform=macos-arm64 <img width="48" height="48" alt="icons8-mac-os-48" src="https://github.com/user-attachments/assets/edb97cde-4b6f-42fa-a574-c233e38da9c9" />
+
 
 Положить архив в корень и выполнить:
 
@@ -125,39 +126,12 @@ AmbientCapabilities=CAP_NET_BIND_SERVICE
 WantedBy=multi-user.target
 ```
 
+Выолнить:
 ```
 sudo systemctl enable --now gost
 ```
 
-  
-
-Если что-то пошло не так:
-
-Удалит интерфейс, созданный вручную
-
-Это освободит имя `awg0` для системной службы:
-
-```
-sudo ip link delete dev awg0
-```
-
-2. Запустите службу заново
-
-Теперь, когда имя свободно, служба должна успешно стартовать:
-
-```
-sudo systemctl start awg-quick@awg0
-```
-
-3. Проверьте статус
-
-```
-sudo systemctl status awg-quick@awg0
-```
-
-
-
-4. 🌍 Установка 3x-ui (Только VPS)
+## 4. 🌍 Установка 3x-ui (Только VPS)
 
 ```
 bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)
@@ -166,26 +140,44 @@ bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.
 1. Зайти: `http://yyy.yyy.yyy.yyy:port`.
 2. Создать **Inbound**: VLESS, Порт **443**, Reality **ON**.
 3. **Listen IP** оставить ПУСТЫМ.
-4. **SNI/Dest**: `asus.com` или `://google.com`.
+4. **SNI/Dest**: `asus.com` или `google.com`.
 
-5. 🇷🇺 🌍 Оптимизация Скорости (Оба сервера)
+## 5. 🇷🇺 🌍 Оптимизация Скорости (Оба сервера)
 
 Чтобы YouTube не тормозил (BBR):
 
 ```
 echo "net.core.default_qdisc=fq" | sudo tee -a /etc/sysctl.conf
 echo "net.ipv4.tcp_congestion_control=bbr" | sudo tee -a /etc/sysctl.conf
+echo "net.ipv6.conf.all.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
+echo "net.ipv6.conf.default.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
+echo "net.ipv6.conf.lo.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
 ```
+  
+6. Импортируй ссылку VLESS из панели VPS.
+  
+7. Смени **Address** на 🇷🇺`xxx.xxx.xxx.xxx` (RU).
 
-6. Настройка клиента (Nekobox/v2rayN):
-  
-7. Импортируй ссылку VLESS из панели VPS.
-  
-8. Смени **Address** на 🇷🇺`xxx.xxx.xxx.xxx` (RU).
-  
-9. **Port**: 443.
-  
-10. **Fingerprint**: `chrome`.
-  
-11. **Flow**: `xtls-rprx-vision`.
+
+> [!NOTE]
+>
+> **Если что-то пошло не так:**  
+
+> Удалит интерфейс, созданный вручную
+```
+sudo ip link delete dev awg0
+```
+> Запустит службу заново
+```
+sudo systemctl start awg-quick@awg0
+```
+>
+> Проверить статус службы
+```
+sudo systemctl status awg-quick@awg0
+```
+> Посмотреть в терминале config AmneziaWG:
+```
+sudo awg show
+```
