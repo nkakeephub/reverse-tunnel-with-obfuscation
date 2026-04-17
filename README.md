@@ -163,7 +163,37 @@ echo "net.ipv6.conf.default.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
 echo "net.ipv6.conf.lo.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
 ```
-  
+
+BBR значительно эффективнее стандартных алгоритмов справляется с потерей пакетов на трансграничных маршрутах:
+
+```
+cat <<EOF | sudo tee -a /etc/sysctl.conf
+net.core.default_qdisc=fq
+net.ipv4.tcp_congestion_control=bbr
+EOF
+```
+
+Оптимизация сетевого стека под потоковое видео, эти настройки увеличивают размер буферов, чтобы сервер мог быстрее проталкивать пакеты данных VLESS через границу:
+
+```
+cat <<EOF | sudo tee -a /etc/sysctl.conf
+# Увеличение максимального размера буферов TCP
+net.core.rmem_max = 67108864
+net.core.wmem_max = 67108864
+net.ipv4.tcp_rmem = 4096 87380 67108864
+net.ipv4.tcp_wmem = 4096 65536 67108864
+# Ускорение повторного использования соединений
+net.ipv4.tcp_tw_reuse = 1
+# Настройка очереди для высоконагруженных каналов
+net.core.netdev_max_backlog = 10000
+EOF
+```
+
+Применяем изменения
+```
+sudo sysctl -p
+```
+
 6. Импортируй ссылку VLESS из панели VPS.
   
 7. Смени **Address** на 🇷🇺`xxx.xxx.xxx.xxx` (RU).
