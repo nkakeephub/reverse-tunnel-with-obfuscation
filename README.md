@@ -130,7 +130,10 @@ sudo mv gost /usr/bin/gost && sudo chmod +x /usr/bin/gost
 
 ```
 [Service]
-ExecStart=/usr/bin/gost -L tcp://:443 -F forward://10.8.0.2:443
+ExecStart=/usr/bin/gost \
+  -L tcp://:443 \
+  -L udp://:443 \
+  -F forward://10.8.0.2:443
 Restart=always
 AmbientCapabilities=CAP_NET_BIND_SERVICE
 [Install]
