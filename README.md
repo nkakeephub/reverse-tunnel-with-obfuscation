@@ -124,7 +124,9 @@ tar -xvf gost_3.2.7-nightly.20251122_linux_amd64.tar
 sudo mv gost /usr/bin/gost && sudo chmod +x /usr/bin/gost
 ```
 
+```
 Создать сервис `sudo nano /etc/systemd/system/gost.service`:
+```
 
 ```
 [Service]
@@ -134,6 +136,22 @@ AmbientCapabilities=CAP_NET_BIND_SERVICE
 [Install]
 WantedBy=multi-user.target
 ```
+
+Если есть второй VPS и хочешь чтобы работал в режиме балансировщика:
+```
+[Service]
+ExecStart=/usr/bin/gost \
+  -L tcp://:443 \
+  -L udp://:443 \
+  -F forward://10.8.0.2:443?priority=10 \
+  -F forward://10.8.0.3:443?priority=5 \
+  --strategy=failover
+Restart=always
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+[Install]
+WantedBy=multi-user.target
+```
+
 
 Выолнить:
 ```
