@@ -278,6 +278,7 @@ nano /etc/systemd/journald.conf
 ```
 Найди или добавь в секцию [Journal] следующие строки:
 
+```
 #Максимальный размер логов на диске
 
 SystemMaxUse=100M
@@ -285,6 +286,7 @@ SystemMaxUse=100M
 #Хранить логи не дольше 1 дня
 
 MaxRetentionSec=1day
+```
 
 Перезапусти службу логов:
 
