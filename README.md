@@ -171,45 +171,116 @@ bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.
 
 ## 5. Оптимизация Скорости (Оба сервера)
 
-Чтобы YouTube не тормозил (BBR on & IPv6 off):
-
 ```
-echo "net.core.default_qdisc=fq" | sudo tee -a /etc/sysctl.conf
-echo "net.ipv4.tcp_congestion_control=bbr" | sudo tee -a /etc/sysctl.conf
-echo "net.ipv6.conf.all.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
-echo "net.ipv6.conf.default.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
-echo "net.ipv6.conf.lo.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
-sudo sysctl -p
+nano /etc/sysctl.conf
 ```
 
-BBR значительно эффективнее стандартных алгоритмов справляется с потерей пакетов на трансграничных маршрутах:
-
 ```
-cat <<EOF | sudo tee -a /etc/sysctl.conf
-net.core.default_qdisc=fq
-net.ipv4.tcp_congestion_control=bbr
-EOF
-```
+#Тюнинг скорости (BBR + FQ + FastOpen)
 
-Оптимизация сетевого стека под потоковое видео, эти настройки увеличивают размер буферов, чтобы сервер мог быстрее проталкивать пакеты данных VLESS через границу:
+net.core.default_qdisc = fq
 
-```
-cat <<EOF | sudo tee -a /etc/sysctl.conf
-# Увеличение максимального размера буферов TCP
+net.ipv4.tcp_congestion_control = bbr
+
+net.ipv4.tcp_fastopen = 3
+
+#Оптимизация буферов
+
 net.core.rmem_max = 67108864
+
 net.core.wmem_max = 67108864
+
 net.ipv4.tcp_rmem = 4096 87380 67108864
+
 net.ipv4.tcp_wmem = 4096 65536 67108864
-# Ускорение повторного использования соединений
-net.ipv4.tcp_tw_reuse = 1
-# Настройка очереди для высоконагруженных каналов
-net.core.netdev_max_backlog = 10000
-EOF
+
+#Лимиты очередей
+
+net.core.somaxconn = 4096
+
+#Увеличение очереди (помогает при нагрузках)
+
+net.core.netdev_max_backlog = 5000
+
+net.ipv4.tcp_max_syn_backlog = 4096
+
+#Безопасность
+
+net.ipv4.conf.all.rp_filter = 1
+
+net.ipv4.conf.default.rp_filter = 1
+
+net.ipv4.icmp_echo_ignore_broadcasts = 1
+
+net.ipv4.tcp_syncookies = 1
+
+#DPI-friendly
+
+net.ipv4.tcp_mtu_probing = 1
+
+#Стабильность соединений
+
+net.ipv4.tcp_keepalive_time = 600
+
+net.ipv4.tcp_keepalive_intvl = 60
+
+net.ipv4.tcp_keepalive_probes = 3
+
+#TIME_WAIT и FIN
+
+net.ipv4.tcp_fin_timeout = 30
+
+#Отключение ipv6
+
+net.ipv6.conf.all.disable_ipv6 = 1
+
+net.ipv6.conf.default.disable_ipv6 = 1
+
+net.ipv6.conf.lo.disable_ipv6 = 1
+
+#Защита от определения аптайма и ОС
+
+net.ipv4.tcp_timestamps = 0
+
+#Ограничение ответов на ICMP (чтобы сложнее было сканировать)
+
+net.ipv4.icmp_echo_ignore_all = 1
 ```
 
 Применяем изменения
+
 ```
 sudo sysctl -p
+```
+
+Настройка MTU (самое важное для скрытия туннелей)
+Нестандартный MTU (например, 1420 или 1280) — это главный признак VPN.
+Хотя мы ставили 1280 для стабильности, сканеры видят это. Чтобы это скрыть, можно использовать правило MSS Clamping в iptables на RU-сервере:
+```
+sudo iptables -t mangle -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+```
+
+Ограничение размера логов в Systemd
+По умолчанию Linux может хранить гигабайты логов. Мы это исправим.
+Открой конфиг journald:
+
+```
+nano /etc/systemd/journald.conf
+```
+Найди или добавь в секцию [Journal] следующие строки:
+
+#Максимальный размер логов на диске
+
+SystemMaxUse=100M
+
+#Хранить логи не дольше 1 дня
+
+MaxRetentionSec=1day
+
+Перезапусти службу логов:
+
+```
+sudo systemctl restart systemd-journald
 ```
 
 6. Импортируй ссылку VLESS из панели VPS.
