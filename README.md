@@ -140,6 +140,12 @@ AmbientCapabilities=CAP_NET_BIND_SERVICE
 WantedBy=multi-user.target
 ```
 
+Чтобы UDP-пакеты «летали» без задержек, добавь правило для MSS (размера пакетов) специально для UDP-туннелирования. Выполни на VPS:
+
+```
+sudo iptables -t mangle -A FORWARD -p udp -j TEE --gateway 10.8.0.1
+```
+
 Если есть второй VPS и хочешь чтобы работал в режиме балансировщика:
 ```
 [Service]
