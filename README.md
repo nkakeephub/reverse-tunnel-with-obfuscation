@@ -15,28 +15,22 @@
 
 ## ⚙️ Выполнить на **RU** и **VPS**:
 
+# Обновляем и устанавливаем список доступных пакетов и установливаем мета-пакет заголовков и ставим AmneziaWG:
 ```
-sudo apt update && sudo apt upgrade -y && sudo apt install -y linux-headers-generic
-
-# Важно: заголовки ядра нужны для корректной сборки модуля AWG
-sudo apt install curl wget nano software-properties-common linux-headers-$(uname -r) -y
-sudo add-apt-repository ppa:amnezia/ppa -y
-sudo apt update && sudo apt install amneziawg -y
-
+sudo apt update && sudo apt upgrade -y && sudo apt install -y curl wget nano software-properties-common linux-headers-$(uname -r) && sudo add-apt-repository ppa:amnezia/ppa -y && sudo apt update && sudo apt install amneziawg -y
+```
+# Модуль AmneziaWG должен собраться автоматически. Чтобы убедиться, что он готов к работе:
+```
+modinfo amneziawg
+```
 # Генерация ключей (сделай на каждом и запиши результат)
+```
 awg genkey | tee privatekey | awg pubkey > publickey
 ```
 
-Посмотреть приватный ключ:
-
+Посмотреть приватный и публичные ключи:
 ```
-cat privatekey
-```
-
-Посмотреть публичный ключ:
-
-```
-cat publickey
+echo "Private Key:" && cat privatekey && echo -e "\nPublic Key:" && cat publickey
 ```
 
 ---
