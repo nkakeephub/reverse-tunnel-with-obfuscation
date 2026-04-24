@@ -92,8 +92,15 @@ AllowedIPs = 10.8.0.0/24
 PersistentKeepalive = 20
 ```
 
-**Запуск (на обоих):** `sudo awg-quick up awg0`. Проверка связи с VPS: `ping 10.8.0.1`.
+**Запуск (на обоих):**.
+```
+sudo awg-quick up awg0
+```
+Проверка связи с VPS:
 
+```
+ping 10.8.0.1
+```
 ---
 
 ## 3. Установка Gost (Только RU)
@@ -120,12 +127,13 @@ https://filezilla-project.org/download.php?platform=osx <img width="50" height="
 Положить архив в корень и выполнить:
 
 ```
-tar -xvf gost_3.2.7-nightly.20251122_linux_amd64.tar
+tar -xvf gost_3.2.7-nightly.20251122_linux_amd64.tar.gz
 sudo mv gost /usr/bin/gost && sudo chmod +x /usr/bin/gost
 ```
 
+Создать сервис
 ```
-Создать сервис `sudo nano /etc/systemd/system/gost.service`:
+sudo nano /etc/systemd/system/gost.service
 ```
 
 ```
@@ -146,20 +154,21 @@ WantedBy=multi-user.target
 sudo iptables -t mangle -A FORWARD -p udp -j TEE --gateway 10.8.0.1
 ```
 
-Если есть второй VPS и хочешь чтобы работал в режиме балансировщика:
-```
-[Service]
-ExecStart=/usr/bin/gost \
-  -L tcp://:443 \
-  -L udp://:443 \
-  -F forward://10.8.0.2:443?priority=10 \
-  -F forward://10.8.0.3:443?priority=5 \
-  --strategy=failover
-Restart=always
-AmbientCapabilities=CAP_NET_BIND_SERVICE
-[Install]
-WantedBy=multi-user.target
-```
+> [!NOTE]
+> Если есть второй VPS и хочешь чтобы работал в режиме балансировщика:
+>```
+>[Service]
+>ExecStart=/usr/bin/gost \
+>  -L tcp://:443 \
+>  -L udp://:443 \
+>  -F forward://10.8.0.2:443?priority=10 \
+>  -F forward://10.8.0.3:443?priority=5 \
+>  --strategy=failover
+>Restart=always
+>AmbientCapabilities=CAP_NET_BIND_SERVICE
+>[Install]
+>WantedBy=multi-user.target
+>```
 
 
 Выолнить:
@@ -264,7 +273,7 @@ sudo sysctl -p
 
 Настройка MTU (самое важное для скрытия туннелей)
 Нестандартный MTU (например, 1420 или 1280) — это главный признак VPN.
-Хотя мы ставили 1280 для стабильности, сканеры видят это. Чтобы это скрыть, можно использовать правило MSS Clamping в iptables на RU-сервере:
+Хотя мы ставили 1180 для стабильности, сканеры видят это. Чтобы это скрыть, можно использовать правило MSS Clamping в iptables на RU-сервере:
 ```
 sudo iptables -t mangle -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
 ```
@@ -302,21 +311,20 @@ sudo systemctl restart systemd-journald
 > [!NOTE]
 >
 > **Если что-то пошло не так:**  
-
 > Удалит интерфейс, созданный вручную
-```
-sudo ip link delete dev awg0
-```
+>```
+>sudo ip link delete dev awg0
+>```
 > Запустит службу заново
-```
-sudo systemctl start awg-quick@awg0
-```
+>```
+>sudo systemctl start awg-quick@awg0
+>```
 >
 > Проверить статус службы
-```
-sudo systemctl status awg-quick@awg0
-```
+>```
+>sudo systemctl status awg-quick@awg0
+>```
 > Посмотреть в терминале config AmneziaWG:
-```
-sudo awg show
-```
+>```
+>sudo awg show
+>```
