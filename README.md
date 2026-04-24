@@ -126,7 +126,7 @@ tar -xvf gost_3.2.7-nightly.20251122_linux_amd64.tar.gz
 sudo mv gost /usr/bin/gost && sudo chmod +x /usr/bin/gost
 ```
 
-Создать сервис
+Создаём сервис gost:
 ```
 sudo nano /etc/systemd/system/gost.service
 ```
@@ -143,8 +143,12 @@ AmbientCapabilities=CAP_NET_BIND_SERVICE
 WantedBy=multi-user.target
 ```
 
-Чтобы UDP-пакеты «летали» без задержек, добавь правило для MSS (размера пакетов) специально для UDP-туннелирования. Выполни на VPS:
+Включаем gost:
+```
+sudo systemctl enable --now gost
+```
 
+Чтобы UDP-пакеты «летали» без задержек, добавь правило для MSS (размера пакетов) специально для UDP-туннелирования. Выполни на VPS:
 ```
 sudo iptables -t mangle -A FORWARD -p udp -j TEE --gateway 10.8.0.1
 ```
@@ -165,11 +169,6 @@ sudo iptables -t mangle -A FORWARD -p udp -j TEE --gateway 10.8.0.1
 >WantedBy=multi-user.target
 >```
 
-
-Выолнить:
-```
-sudo systemctl enable --now gost
-```
 
 ## 4. Установка 3x-ui (Только VPS)
 
