@@ -17,6 +17,7 @@
 
 ```
 sudo apt update && sudo apt upgrade -y
+sudo apt install linux-headers-generic
 # Важно: заголовки ядра нужны для корректной сборки модуля AWG
 sudo apt install curl wget nano software-properties-common linux-headers-$(uname -r) -y
 sudo add-apt-repository ppa:amnezia/ppa -y
