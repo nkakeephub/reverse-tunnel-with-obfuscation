@@ -11,19 +11,19 @@
 Схема: [Твой ПК] ➔ [RU-Сервер (xxx.xxx.xxx.xxx)] ➔ [AWG-Туннель] ➔ [VPS (yyy.yyy.yyy.yyy)] ➔ [Internet]
 
 
-1. Подготовка (Оба сервера)
+# 1. Подготовка (Оба сервера)
 
 ## ⚙️ Выполнить на **RU** и **VPS**:
 
-# Обновляем и устанавливаем список доступных пакетов и установливаем мета-пакет заголовков и ставим AmneziaWG:
+Обновляем и устанавливаем список доступных пакетов и установливаем мета-пакет заголовков и ставим AmneziaWG:
 ```
 sudo apt update && sudo apt upgrade -y && sudo apt install -y curl wget nano software-properties-common linux-headers-$(uname -r) && sudo add-apt-repository ppa:amnezia/ppa -y && sudo apt update && sudo apt install amneziawg -y
 ```
-# Модуль AmneziaWG должен собраться автоматически. Чтобы убедиться, что он готов к работе:
+Модуль AmneziaWG должен собраться автоматически. Чтобы убедиться, что он готов к работе:
 ```
 modinfo amneziawg
 ```
-# Генерация ключей (сделай на каждом и запиши результат)
+Генерация ключей (сделай на каждом и запиши результат)
 ```
 awg genkey | tee privatekey | awg pubkey > publickey
 ```
@@ -39,7 +39,7 @@ echo "Private Key:" && cat privatekey && echo -e "\nPublic Key:" && cat publicke
 
 Создать файл `sudo nano /etc/amnezia/amneziawg/awg0.conf`:
 
-### **На RU-сервере (Приемник):**
+**На RU-сервере (Приемник):**
 
 ```
 [Interface]
@@ -62,7 +62,7 @@ PublicKey = <ПУБЛИЧНЫЙ_KEY_ОТ_VPS>
 AllowedIPs = 10.8.0.2/32
 ```
 
-### **На VPS-сервере (Инициатор):**
+**На VPS-сервере (Инициатор):**
 
 ```
 [Interface]
@@ -87,7 +87,7 @@ AllowedIPs = 10.8.0.0/24
 PersistentKeepalive = 20
 ```
 
-**Запуск (на обоих):**.
+Запуск (на обоих):
 ```
 sudo systemctl start awg-quick@awg0
 ```
@@ -98,7 +98,7 @@ ping 10.8.0.1
 ```
 ---
 
-## 3. Установка Gost (Только RU)
+# 3. Установка Gost (Только RU)
 
 Скачать архив:
 ```
@@ -170,7 +170,7 @@ sudo iptables -t mangle -A FORWARD -p udp -j TEE --gateway 10.8.0.1
 >```
 
 
-## 4. Установка 3x-ui (Только VPS)
+# 4. Установка 3x-ui (Только VPS)
 
 ```
 bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)
@@ -181,7 +181,7 @@ bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.
 3. **Listen IP** оставить ПУСТЫМ.
 4. **SNI/Dest**: `asus.com` или `google.com`.
 
-## 5. Оптимизация Скорости (Оба сервера)
+# 5. Оптимизация Скорости (Оба сервера)
 
 ```
 nano /etc/sysctl.conf
