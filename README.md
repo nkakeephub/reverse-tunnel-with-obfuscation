@@ -35,11 +35,11 @@ echo "Private Key:" && cat privatekey && echo -e "\nPublic Key:" && cat publicke
 
 ---
 
-2. Настройка AmneziaWG (Туннель)
+# 2. Настройка AmneziaWG (Туннель)
 
 Создать файл `sudo nano /etc/amnezia/amneziawg/awg0.conf`:
 
-## **На RU-сервере (Приемник):**
+### **На RU-сервере (Приемник):**
 
 ```
 [Interface]
@@ -62,7 +62,7 @@ PublicKey = <ПУБЛИЧНЫЙ_KEY_ОТ_VPS>
 AllowedIPs = 10.8.0.2/32
 ```
 
-## **На VPS-сервере (Инициатор):**
+### **На VPS-сервере (Инициатор):**
 
 ```
 [Interface]
@@ -89,7 +89,7 @@ PersistentKeepalive = 20
 
 **Запуск (на обоих):**.
 ```
-sudo awg-quick up awg0
+sudo systemctl start awg-quick@awg0
 ```
 Проверка связи с VPS:
 
