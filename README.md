@@ -17,8 +17,10 @@
 
 Обновляем и устанавливаем список доступных пакетов и установливаем мета-пакет заголовков и ставим AmneziaWG:
 ```
-apt update && apt install -y curl wget nano software-properties-common linux-headers-$(uname -r) dkms iptables && add-apt-repository ppa:amnezia/ppa -y && apt update && apt install -y amneziawg-tools && wget -qO- https://github.com | tar -xz -C /usr/local/bin/ amneziawg-go && chmod +x /usr/local/bin/amneziawg-go && amneziawg-go --version
-
+apt update && apt full-upgrade -y && apt install -y curl wget nano software-properties-common linux-headers-$(uname -r) dkms iptables && apt autoremove -y
+sudo apt install -y software-properties-common python3-launchpadlib gnupg2 linux-headers-$(uname -r)
+sudo add-apt-repository ppa:amnezia/ppa
+sudo apt-get install -y amneziawg
 ```
 Модуль AmneziaWG должен собраться автоматически. Чтобы убедиться, что он готов к работе:
 ```
