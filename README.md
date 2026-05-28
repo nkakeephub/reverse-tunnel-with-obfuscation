@@ -99,6 +99,11 @@ sudo systemctl start awg-quick@awg0
 ```
 ping 10.8.0.1
 ```
+
+Поднимать интерфейс awg0 при каждой загрузке:
+```
+sudo systemctl enable awg-quick@awg0
+```
 ---
 
 # 3. Установка Gost (Только RU)
