@@ -22,6 +22,24 @@ sudo apt install -y software-properties-common python3-launchpadlib gnupg2 linux
 sudo add-apt-repository ppa:amnezia/ppa
 sudo apt-get install -y amneziawg
 ```
+> [!NOTE]
+> Новый репозитарий
+>1. Обновляем систему и ставим базовые утилиты
+>```
+>sudo apt-get update && sudo apt-get install -y curl wget nano iptables
+>```
+>2. Скачиваем актуальный релиз AmneziaWG Tools v3.1 напрямую с GitHub
+>```curl -s https://github.com \
+>| grep "browser_download_url.*amd64.deb" \
+>| cut -d : -f 2,3 \
+>| tr -d \" \
+>| wget -qi -
+>```
+>3. Устанавливаем скачанный пакет и удаляем за собой установочный файл
+>```sudo dpkg -i amneziawg-tools*.deb
+>rm amneziawg-tools*.deb
+>```
+
 Модуль AmneziaWG должен собраться автоматически. Чтобы убедиться, что он готов к работе:
 ```
 modinfo amneziawg
