@@ -24,20 +24,29 @@ sudo apt-get install -y amneziawg
 ```
 > [!NOTE]
 > Новый репозитарий
->1. Обновляем систему и ставим базовые утилиты
->```
->sudo apt-get update && sudo apt-get install -y curl wget nano iptables
->```
->2. Скачиваем актуальный релиз AmneziaWG Tools v3.1 напрямую с GitHub
->```curl -s https://github.com \
->| grep "browser_download_url.*amd64.deb" \
->| cut -d : -f 2,3 \
->| tr -d \" \
->| wget -qi -
->```
->3. Устанавливаем скачанный пакет и удаляем за собой установочный файл
->```sudo dpkg -i amneziawg-tools*.deb
->rm amneziawg-tools*.deb
+# 1. Установка базовых утилит, заголовков ядра и DKMS для сборки модулей
+sudo apt update
+sudo apt install -y software-properties-common python3-launchpadlib gnupg2 linux-headers-$(uname -r) dkms iptables
+
+# 2. Импорт ключа репозитория Amnezia
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 57290828
+
+# 3. Добавление официального репозитория Amnezia PPA (под вашу версию Focal)
+echo "deb https://ppa.launchpadcontent.net/amnezia/ppa/ubuntu focal main" | sudo tee /etc/apt/sources.list.d/amnezia.list
+echo "deb-src https://ppa.launchpadcontent.net/amnezia/ppa/ubuntu focal main" | sudo tee -a /etc/apt/sources.list.d/amnezia.list
+
+# 4. Обновление списки пакетов
+sudo apt-get update
+
+# 5. Установка утилиты управления И САМОГО МОДУЛЯ ЯДРА (Критически важно!)
+sudo apt-get install -y amneziawg amneziawg-dkms
+
+# 6. Принудительный запуск модуля AmneziaWG в ядре
+sudo modprobe amneziawg
+
+# 7. Проверка: команда должна вывести "amneziawg", подтверждая, что ядро его видит
+lsmod | grep amneziawg
+
 >```
 
 Модуль AmneziaWG должен собраться автоматически. Чтобы убедиться, что он готов к работе:
