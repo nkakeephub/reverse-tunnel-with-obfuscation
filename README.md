@@ -117,7 +117,7 @@ H4 = 4
 [Peer]
 PublicKey = <ПУБЛИЧНЫЙ_KEY_ОТ_RU>
 Endpoint = xxx.xxx.xxx.xxx:51820
-AllowedIPs = 10.8.0.0/24
+AllowedIPs = 10.8.0.1/24
 PersistentKeepalive = 20
 ```
 
